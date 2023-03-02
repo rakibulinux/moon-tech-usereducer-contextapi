@@ -1,9 +1,35 @@
 import React from "react";
+import ProductCard from "../components/ProductCard";
+import { useProducts } from "../contexts/ProductProvider";
 
 const Home = () => {
+  const {
+    state: { products, loading, error },
+  } = useProducts();
+
+  let content;
+  if (loading) {
+    content = <p>Loading...</p>;
+  }
+  if (error) {
+    content = <p>Error: {error}</p>;
+  }
+
+  if (!loading && !error && products.length === 0) {
+    content = <p>No content found in this page</p>;
+  }
+
+  if (!loading && !error && products.length >= 0) {
+    content = products?.map((product) => (
+      <ProductCard key={product?._id} product={product} />
+    ));
+  }
+
+  console.log(products);
+
   return (
-    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 max-w-7xl gap-14 mx-auto my-10'>
-      <h1>This is home page</h1>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 max-w-7xl gap-14 mx-auto my-10">
+      {content}
     </div>
   );
 };
